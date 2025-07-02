@@ -1,0 +1,8 @@
+--- # Poggit-CI Manifest. Open the CI at https://poggit.pmmp.io/ci/mchtra13/Flying-Pet
+build-by-default: true
+branches:
+- main
+projects:
+  Flying-Pet:
+    path: ""
+...
