@@ -1,0 +1,12 @@
+pet-bonus-chopping: "🌲 Pet bonus: x{multiplier} wood harvest!"
+pet-bonus-farming: "🌾 Pet bonus: x{multiplier} crop harvest!"
+pet-bonus-mining: "⛏️ Pet bonus: x{multiplier} mining drop!"
+pet-bonus-sell: "✨ Pet bonus: x{multiplier} money!"
+pet-bossbar: "🐾 Pet: {type} [Lvl {level} | {xp}/{needed} XP]"
+pet-change-active: "§aActive pet set to: §b{type}"
+pet-level-up: §6🎉 Your {type} pet leveled up to {level}!
+pet-list-content: "Click to select your active pet:"
+pet-list-title: "Pet List"
+pet-manage-button-back: "🔙 Back"
+pet-manage-button-select: "📋 Select Active Pet"
+pet-manage-title: "Manage Pet"

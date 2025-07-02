@@ -1,0 +1,12 @@
+pet-bonus-chopping: "🌲 Bonus Pet: x{multiplier} hasil tebangan!"
+pet-bonus-farming: "🌾 Bonus Pet: x{multiplier} hasil panen!"
+pet-bonus-mining: "⛏️ Bonus Pet: x{multiplier} hasil tambang!"
+pet-bonus-sell: "✨ Bonus dari Pet: x{multiplier} uang!"
+pet-bossbar: "🐾 Pet: {type} [Lvl {level} | {xp}/{needed} XP]"
+pet-change-active: "§aPet aktif diubah menjadi: §b{type}"
+pet-level-up: §6🎉 Pet {type}-mu naik ke level {level}!
+pet-list-content: "Klik untuk memilih pet aktif:"
+pet-list-title: "Daftar Pet"
+pet-manage-button-back: "🔙 Kembali"
+pet-manage-button-select: "📋 Pilih Pet Aktif"
+pet-manage-title: "Kelola Pet"
