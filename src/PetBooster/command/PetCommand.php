@@ -4,18 +4,22 @@ namespace PetBooster\command;
 
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
-use pocketmine\command\CommandExecutor;
 use pocketmine\player\Player;
 use PetBooster\Main;
 
-class PetCommand implements CommandExecutor {
+class PetCommand extends Command {
 
-    public function __construct(private Main $plugin) {}
+    private Main $plugin;
 
-    public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool {
+    public function __construct(Main $plugin) {
+        parent::__construct("pet", "Kelola pet kamu", "/pet");
+        $this->plugin = $plugin;
+    }
+
+    public function execute(CommandSender $sender, string $label, array $args): void {
         if (!$sender instanceof Player) {
             $sender->sendMessage("§cCommand ini hanya bisa dipakai oleh pemain.");
-            return true;
+            return;
         }
 
         if (isset($args[0]) && strtolower($args[0]) === "menu") {
@@ -23,7 +27,5 @@ class PetCommand implements CommandExecutor {
         } else {
             $sender->sendMessage("§eGunakan §6/pet menu §euntuk membuka menu pet.");
         }
-
-        return true;
     }
 }
