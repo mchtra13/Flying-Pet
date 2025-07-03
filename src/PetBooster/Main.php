@@ -53,7 +53,7 @@ class Main extends PluginBase {
             ['FlyingPet']
         );
         
-        $this->getCommand("pet")?->setExecutor(new PetCommand($this));
+        $this->getServer()->getCommandMap()->register("pet", new PetCommand($this));
         $this->getServer()->getPluginManager()->registerEvents(new PetEventListener($this), $this);
 
         $this->getLogger()->info("§a[PetBooster] Diaktifkan!");
