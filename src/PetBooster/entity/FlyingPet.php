@@ -13,8 +13,9 @@ use pocketmine\world\sound\PopSound;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\inventory\ArmorInventory;
 use pocketmine\block\BlockTypeIds;
-use pocketmine\item\BlockItem;
 use pocketmine\block\utils\MobHeadType;
+use pocketmine\item\VanillaItems;
+use pocketmine\item\ItemBlock;
 use pocketmine\network\mcpe\protocol\types\entity\EntityIds;
 
 class FlyingPet extends Living {
@@ -44,22 +45,23 @@ class FlyingPet extends Living {
     }
 
     public function updateAppearance(): void {
-        if ($this->isClosed()) return;
+    if ($this->isClosed()) return;
 
-        $headType = match (strtolower($this->petType)) {
-            "creeper" => MobHeadType::CREEPER(),
-            "zombie" => MobHeadType::ZOMBIE(),
-            "skeleton" => MobHeadType::SKELETON(),
-            "wither" => MobHeadType::WITHER_SKELETON(),
-            "dragon" => MobHeadType::DRAGON(),
-            "piglin" => MobHeadType::PIGLIN(),
-            default => MobHeadType::PLAYER(), // fallback head
-        };
+    $headType = match (strtolower($this->petType)) {
+        "creeper" => MobHeadType::CREEPER(),
+        "zombie" => MobHeadType::ZOMBIE(),
+        "skeleton" => MobHeadType::SKELETON(),
+        "wither" => MobHeadType::WITHER_SKELETON(),
+        "dragon" => MobHeadType::DRAGON(),
+        "piglin" => MobHeadType::PIGLIN(),
+        default => MobHeadType::PLAYER(),
+    };
 
-        $headBlock = $headType->getBlock();
-        $helmet = new BlockItem(BlockTypeIds::MOB_HEAD, 0, $headBlock);
-        $this->getArmorInventory()->setHelmet($helmet);
-    }
+    // Gunakan MOB_HEAD item dengan tipe kepala monster
+    $helmet = VanillaItems::MOB_HEAD()->setHeadType($headType);
+
+    $this->getArmorInventory()->setHelmet($helmet);
+}
 
     public function onUpdate(int $currentTick): bool {
         $hasUpdated = parent::onUpdate($currentTick);
