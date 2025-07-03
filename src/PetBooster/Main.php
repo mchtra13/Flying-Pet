@@ -3,17 +3,17 @@
 namespace PetBooster;
 
 use pocketmine\plugin\PluginBase;
+use pocketmine\player\Player;
 use pocketmine\entity\EntityFactory;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\entity\EntityDataHelper;
-use pocketmine\entity\Location;
 use pocketmine\world\World;
 use pocketmine\utils\Config;
 use pocketmine\utils\SingletonTrait;
-use pocketmine\utils\Language;
+use PetBooster\utils\Lang;
+use PetBooster\command\PetCommand;
 use PetBooster\entity\FlyingPet;
 use PetBooster\utils\PetManager;
-use PetBooster\command\PetCommand;
 use PetBooster\listener\PetEventListener;
 
 class Main extends PluginBase {
@@ -22,31 +22,29 @@ class Main extends PluginBase {
 
     private Config $petConfig;
     private PetManager $petManager;
-    private Language $language;
+    private Lang $language;
 
     protected function onLoad(): void {
         self::setInstance($this);
     }
 
     protected function onEnable(): void {
-        // Buat folder lang & simpan file
         @mkdir($this->getDataFolder() . "lang/");
         $this->saveResource("lang/en.yml");
         $this->saveResource("lang/id.yml");
 
-        // Load bahasa, default EN. Ganti "en" jadi "id" kalau ingin Indonesia
-        $this->language = new Language("en", $this->getDataFolder() . "lang/", "en");
+        $this->language = new Lang($this->getDataFolder() . "lang/", "en");
 
-        // Buat folder plugin
         @mkdir($this->getDataFolder());
-
-        // Load atau buat pets.yml
         $this->petConfig = new Config($this->getDataFolder() . "pets.yml", Config::YAML);
 
-        // Inisialisasi manajer pet
         $this->petManager = new PetManager($this);
+        
+        // Buat petshop.yml jika belum ada
+       if (!file_exists($this->getDataFolder() . "petshop.yml")) {
+    $this->saveResource("petshop.yml");
+}
 
-        // Register entity FlyingPet
         EntityFactory::getInstance()->register(
             FlyingPet::class,
             function(World $world, CompoundTag $nbt): FlyingPet {
@@ -54,9 +52,8 @@ class Main extends PluginBase {
             },
             ['FlyingPet']
         );
-
-        // Daftarkan command & event listener
-        $this->getServer()->getCommandMap()->register("pet", new PetCommand($this));
+        
+        $this->getCommand("pet")?->setExecutor(new PetCommand($this));
         $this->getServer()->getPluginManager()->registerEvents(new PetEventListener($this), $this);
 
         $this->getLogger()->info("§a[PetBooster] Diaktifkan!");
@@ -67,7 +64,7 @@ class Main extends PluginBase {
         $this->getLogger()->info("§c[PetBooster] Dinonaktifkan!");
     }
 
-    public function getLang(): Language {
+    public function getLang(): Lang {
         return $this->language;
     }
 
