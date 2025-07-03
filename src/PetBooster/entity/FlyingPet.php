@@ -4,19 +4,17 @@ namespace PetBooster\entity;
 
 use pocketmine\entity\Living;
 use pocketmine\entity\EntitySizeInfo;
-use pocketmine\entity\EntityDataHelper;
 use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\entity\Entity;
 use pocketmine\math\Vector3;
 use pocketmine\entity\Location;
 use pocketmine\player\Player;
 use pocketmine\world\particle\HappyVillagerParticle;
 use pocketmine\world\sound\PopSound;
-use pocketmine\item\VanillaItems;
-use pocketmine\item\ItemIds;
+use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\inventory\ArmorInventory;
-use pocketmine\scheduler\ClosureTask;
-use pocketmine\entity\animation\ArmSwingAnimation;
+use pocketmine\block\BlockTypeIds;
+use pocketmine\item\BlockItem;
+use pocketmine\block\utils\MobHeadType;
 use pocketmine\network\mcpe\protocol\types\entity\EntityIds;
 
 class FlyingPet extends Living {
@@ -48,13 +46,18 @@ class FlyingPet extends Living {
     public function updateAppearance(): void {
         if ($this->isClosed()) return;
 
-        $helmet = match (strtolower($this->petType)) {
-            "cow" => VanillaItems::LEATHER_HELMET(), // or use custom head
-            "creeper" => VanillaItems::CHAINMAIL_HELMET(),
-            "enderman" => VanillaItems::IRON_HELMET(),
-            default => VanillaItems::GOLDEN_HELMET(),
+        $headType = match (strtolower($this->petType)) {
+            "creeper" => MobHeadType::CREEPER(),
+            "zombie" => MobHeadType::ZOMBIE(),
+            "skeleton" => MobHeadType::SKELETON(),
+            "wither" => MobHeadType::WITHER_SKELETON(),
+            "dragon" => MobHeadType::DRAGON(),
+            "piglin" => MobHeadType::PIGLIN(),
+            default => MobHeadType::PLAYER(), // fallback head
         };
 
+        $headBlock = $headType->getBlock();
+        $helmet = new BlockItem(BlockTypeIds::MOB_HEAD, 0, $headBlock);
         $this->getArmorInventory()->setHelmet($helmet);
     }
 
@@ -62,13 +65,16 @@ class FlyingPet extends Living {
         $hasUpdated = parent::onUpdate($currentTick);
 
         if ($this->owner !== null && !$this->isClosed() && $this->owner->isOnline()) {
-            $targetPos = $this->owner->getPosition()->add(0, 2, 0);
-            $this->motion = $targetPos->subtractVector($this->getPosition())->multiply(0.2);
-            $this->setMotion($this->motion);
+            // Gerakan mengikuti pemain
+            $target = $this->owner->getLocation()->add(0, 2, 0);
+            $dx = $target->getX() - $this->location->getX();
+            $dy = $target->getY() - $this->location->getY();
+            $dz = $target->getZ() - $this->location->getZ();
+            $this->setMotion(new Vector3($dx * 0.2, $dy * 0.2, $dz * 0.2));
 
-            // Partikel bonus
+            // Tambahkan partikel
             if ($currentTick % 10 === 0) {
-                $this->getWorld()->addParticle($this->location->asVector3(), new HappyVillagerParticle());
+                $this->location->getWorld()->addParticle($this->location->asVector3(), new HappyVillagerParticle());
             }
         }
 
@@ -76,12 +82,11 @@ class FlyingPet extends Living {
     }
 
     public function attack(EntityDamageEvent $source): void {
-        // Tidak bisa diserang
-        $source->cancel();
+        $source->cancel(); // pet tidak bisa diserang
     }
 
     public function getDrops(): array {
-        return []; // tidak drop
+        return []; // tidak drop apapun
     }
 
     public function flagForDespawn(): void {
@@ -115,7 +120,8 @@ class FlyingPet extends Living {
             $this->petType = $nbt->getString("petType");
         }
         $this->setNameTagAlwaysVisible();
-        $this->setScale(0.8); // kecil
+        $this->setScale(0.8);
         $this->updateAppearance();
     }
 }
+
