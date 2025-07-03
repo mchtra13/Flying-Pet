@@ -1,19 +1,15 @@
 name: PetBooster
-version: 1.0.0
-api: 5.0.0
 main: PetBooster\Main
-author: Ramadhan
-description: Plugin pet terbang yang memberikan bonus seperti 2x drop, XP, dan uang sesuai level pet.
+author: Mchtra
+version: 1.0.0
+api: 5.1.0
 
 commands:
   pet:
-    description: Buka UI pengelolaan pet
-    usage: /pet
+    description: Manage your pet
+    usage: "/pet menu"
     permission: pet.command
 
 permissions:
   pet.command:
     default: true
-
-depend:
-  - FormAPI
